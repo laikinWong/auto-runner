@@ -124,7 +124,7 @@ suite = {
         #     'id': "编号2",
         #     'name': "登录密码错误",
         #     "skip": False,
-        #     "steps": [
+        # #     "steps": [
         #         {
         #             "desc": "重置浏览器上下文",
         #             "method": "reset_browser_context",

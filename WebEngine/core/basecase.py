@@ -220,6 +220,23 @@ class LocatorMixin(BaseBrowser):
         else:
             loc.click(button=button, click_count=count, timeout=timeout)
 
+    def click_ele2(self, locator, button='left', count=2, timeout=20000):
+        """
+        点击元素
+        :param locator: 元素的定位表达式
+        :param button: 鼠标按键 : "left", "middle", "right"
+        :param count: 点击次数
+        :param timeout: 等待元素可见的最大超时时间
+        :return:
+        """
+        self.log.info(f"正在点击元素：{locator}")
+        loc = self.page.locator(locator)
+        # 如果点击次数为1，并且是左键，则使用evaluate方法执行点击操作
+        # if count == 1 and button == 'left':
+        #     loc.evaluate('el => el.click()')
+        # else:
+        loc.click(button=button, click_count=count, timeout=timeout)
+
     def clear_value(self, locator, timeout=3000):
         """清空输入框的值"""
         self.log.info(f"正在清空输入框的值：{locator}")
@@ -540,6 +557,24 @@ class AssertMixin(BaseBrowser):
         else:
             expect(self.page.locator(locator)).not_to_have_text(expect_results, timeout=5000)
             self.log.info(f"断言元素的文本，预期结果!=实际结果")
+
+    def except_text_not_empty(self, locator, index=1):
+        """
+        断言元素文本不为空
+        :param locator: 元素定位表达式
+        :param index: 定位到的第几个元素（从1开始）
+        """
+        if index > 1:
+            element = self.page.locator(locator).nth(index - 1)
+        else:
+            element = self.page.locator(locator).first
+        actual_text = element.text_content()
+        self.log.info(f"正在断言元素 {locator} 的文本不为空，实际文本：'{actual_text}'")
+
+        if not actual_text or actual_text.strip() == "":
+            raise AssertionError(f"元素 {locator} 的文本为空，不符合预期")
+        self.log.info("断言成功 - 元素文本不为空")
+
 
     def except_to_have_attribute(self, locator, name, value, is_equal=1):
         """
